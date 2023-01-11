@@ -1,63 +1,25 @@
 const express = require('express'),
-    morgan = require('morgan');
+    morgan = require('morgan'),
+    mongoose = require('mongoose'),
+    bodyParser = require('body-parser'),
+    Models = require('./models.js');
 
 const app = express();
 
 app.use(express.static('public'));
 app.use(morgan('common'));
 
-let topMovie = [
-    {
-        id: 1,
-        title: 'Abraham Lincoln: Vampire Hunter',
-        actors: ['Benjamin Walker', 'Dominic Cooper'],
-    },
-    {
-        id: 2,
-        title: '300',
-        actors: ['Gerard Butler', 'Michael Fassbender'],
-    },
-    {
-        id: 3,
-        title: 'Iron Man',
-        actors: ['Robert Downey jr.', 'Jeff Bridges'],
-    },
-    {
-        id: 4,
-        title: 'The Imitation Game',
-        actors: ['Benedict Cumberbatch', 'Keira Knightley'],
-    },
-    {
-        id: 5,
-        title: 'Sherlock Holmes: A Game of Shadows',
-        actors: ['Benedict Cumberbatch', 'Jude Law'],
-    },
-    {
-        id: 6,
-        title: 'Doctor Strange',
-        actors: ['Benedict Cumberbatch', 'Chiwetel Ejiofor'],
-    },
-    {
-        id: 7,
-        title: 'Black Panther',
-        actors: ['Chadwick Boseman', 'Michael B. Jordan'],
-    },
-    {
-        id: 8,
-        title: 'John Wick',
-        actors: ['Keanu Reeves', 'Michael Nyqvist'],
-    },
-    {
-        id: 9,
-        title: 'Kingsman: The Secret Service',
-        actors: ['Colin Firth', 'Samuel L. Jackson'],
-    },
-    {
-        id: 10,
-        title: 'Robin Hood: Men In Tights',
-        actors: ['Cary Elwes', 'Roger Rees'],
-    },
-];
+// Define Database Models
+const Movies = Models.Movie;
+const Users = Models.User;
+
+// Connect to the database on the localhost using mongoose
+mongoose.connect('mongodb://127.0.0.1/myMovDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // GET requests
 app.get('/', (req, res) => {
@@ -70,57 +32,106 @@ app.get('/documentation', (req, res) => {
 });
 
 //API Routes
-/*
-None of the routes below have their handler functions implemented
-Each simply returns a success string for the time being
-*/
 
 /**
  * Fucntion -> READ all movies
- * Param(s) -> None
- * Request -> None
- * Return -> JSON Object
  *
- * TODO - STATUS -> INCOMPLETE/NOT IMPLEMENTED
+ * Return -> JSON Object
  */
 app.get('/movies', (req, res) => {
-    res.send('Successful GET request returning data on all the movies');
+    Movies.find()
+        .then((movies) => {
+            res.status(200).json(movies);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
 });
 
 /**
  * Fucntion -> READ data from single movie
- * Param(s) -> title = Movie Title
- * Request -> None
- * Return -> JSON Object
+ * Param(s) -> :title = Movie Title
  *
- * TODO - STATUS -> INCOMPLETE/NOT IMPLEMENTED
+ * Return -> JSON Object
  */
 app.get('/movies/:title', (req, res) => {
-    res.send('Successful GET request returning data on a single movie');
+    Movies.findOne({ Title: req.params.title })
+        .then((movie) => {
+            res.status(200).json(movie);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
 });
 
 /**
  * Fucntion -> READ data from single genre
- * Param(s) -> genreTitle = Genre Title
- * Request -> None
- * Return -> JSON Object
+ * Param(s) -> :genreTitle
  *
- * TODO - STATUS -> INCOMPLETE/NOT IMPLEMENTED
+ * Return -> JSON Object
  */
 app.get('/genre/:genreTitle', (req, res) => {
-    res.send('Successful GET request returning data on a single genre');
+    console.log(req.params.genreTitle);
+    Movies.findOne({ 'Genre.Name': req.params.genreTitle })
+        .then((movies) => {
+            res.send(movies.Genre);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
 });
 
 /**
  * Fucntion -> READ data from single Director
- * Param(s) -> directorName = Director Name
- * Request -> None
- * Return -> JSON Object
+ * Param(s) -> :directorName
  *
- * TODO - STATUS -> INCOMPLETE/NOT IMPLEMENTED
+ * Return -> JSON Object
  */
 app.get('/directors/:directorName', (req, res) => {
-    res.send('Successful GET request returning data on a single director');
+    Movies.findOne({ 'Director.Name': req.params.directorName })
+        .then((movies) => {
+            res.send(movies.Director);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+});
+
+/**
+ * Fucntion -> READ data from all Users
+ *
+ * Return -> JSON Object
+ */
+app.get('/users', (req, res) => {
+    Users.find()
+        .then((users) => {
+            res.status(201).json(users);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+});
+
+/**
+ * Fucntion -> READ data from single user
+ * Param(s) -> :userName
+ *
+ * Return -> JSON Object
+ */
+app.get('/users/:userName', (req, res) => {
+    Users.findOne({ Username: req.params.userName })
+        .then((User) => {
+            res.status(200).json(User);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error ' + err);
+        });
 });
 
 /**
