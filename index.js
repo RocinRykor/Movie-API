@@ -21,6 +21,11 @@ mongoose.connect('mongodb://127.0.0.1/myMovDB', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+let auth = require('./auth')(app);
+
+const passport = require('passport');
+require('./passport');
+
 // GET requests
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: __dirname });
@@ -38,16 +43,20 @@ app.get('/documentation', (req, res) => {
  *
  * Return -> JSON Object
  */
-app.get('/movies', (req, res) => {
-    Movies.find()
-        .then((movies) => {
-            res.status(200).json(movies);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send('Error: ' + err);
-        });
-});
+app.get(
+    '/movies',
+    passport.authenticate('jwt', { session: false }),
+    (req, res) => {
+        Movies.find()
+            .then((movies) => {
+                res.status(201).json(movies);
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error: ' + error);
+            });
+    }
+);
 
 /**
  * Fucntion -> READ data from single movie
