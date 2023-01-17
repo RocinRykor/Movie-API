@@ -5,6 +5,8 @@ const express = require('express'),
     mongoose = require('mongoose'),
     Models = require('./models.js');
 
+const { check, validationResult } = require('express-validator');
+
 const app = express();
 
 // Define Database Models
@@ -16,6 +18,10 @@ mongoose.connect('mongodb://127.0.0.1/myMovDB', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
+
+// Use CORS to setup Allowed Origins
+const cors = require('cors');
+app.use(cors());
 
 //Require passport module and import passport.js file
 let auth = require('./auth')(app);
@@ -165,7 +171,7 @@ app.get(
 );
 
 /**
- * Fucntion -> CREATE data for a single User
+ * Fucntion -> CREATE data for a single User, automatically hashes the password before inserting into DB
  * Request -> JSON Object
     Username: String,
     Password: String,
@@ -175,34 +181,64 @@ app.get(
  * Return -> JSON Object
  */
 
-app.post('/users', (req, res) => {
-    Users.findOne({ Username: req.body.Username })
-        .then((user) => {
-            if (user) {
-                return res
-                    .status(400)
-                    .send(req.body.Username + 'already exists');
-            } else {
-                Users.create({
-                    Username: req.body.Username,
-                    Password: req.body.Password,
-                    Email: req.body.Email,
-                    Birthday: req.body.Birthday,
-                })
-                    .then((user) => {
-                        res.status(201).json(user);
+app.post(
+    '/users',
+    /* 
+    Validation logic here for request:
+    Username Requirements: Alohanumeric with Min Length of 3 Characters
+    Password Requirements: Minimum of 10 Characters
+    Email: Valid Email Address
+    */
+    [
+        check('Username', 'Username is required').isLength({ min: 3 }),
+        check(
+            'Username',
+            'Username contains non alphanumeric characters - not allowed.'
+        ).isAlphanumeric(),
+        check(
+            'Password',
+            'Password is required, minimum length 10 characters'
+        ).isLength({ min: 10 }),
+        check('Email', 'Email does not appear to be valid').isEmail(),
+    ],
+    (req, res) => {
+        // check the validation object for errors
+        let errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        let hashedPassword = Users.hashPassword(req.body.Password);
+        Users.findOne({ Username: req.body.Username }) // Search to see if a user with the requested username already exists
+            .then((user) => {
+                if (user) {
+                    //If the user is found, send a response that it already exists
+                    return res
+                        .status(400)
+                        .send(req.body.Username + ' already exists');
+                } else {
+                    Users.create({
+                        Username: req.body.Username,
+                        Password: hashedPassword,
+                        Email: req.body.Email,
+                        Birthday: req.body.Birthday,
                     })
-                    .catch((error) => {
-                        console.error(error);
-                        res.status(500).send('Error: ' + error);
-                    });
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-            res.status(500).send('Error: ' + error);
-        });
-});
+                        .then((user) => {
+                            res.status(201).json(user);
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            res.status(500).send('Error: ' + error);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                res.status(500).send('Error: ' + error);
+            });
+    }
+);
 
 /**
  * Fucntion -> PUT/UPDATE data for a single User
