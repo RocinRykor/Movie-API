@@ -255,13 +255,39 @@ app.post(
 app.put(
     '/users/:Username',
     passport.authenticate('jwt', { session: false }),
+    /* 
+    Validation logic here for request:
+    Username Requirements: Alohanumeric with Min Length of 3 Characters
+    Password Requirements: Minimum of 10 Characters
+    Email: Valid Email Address
+    */
+    [
+        check('Username', 'Username is required').isLength({ min: 3 }),
+        check(
+            'Username',
+            'Username contains non alphanumeric characters - not allowed.'
+        ).isAlphanumeric(),
+        check(
+            'Password',
+            'Password is required, minimum length 10 characters'
+        ).isLength({ min: 10 }),
+        check('Email', 'Email does not appear to be valid').isEmail(),
+    ],
     (req, res) => {
+        // check the validation object for errors
+        let errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        let hashedPassword = Users.hashPassword(req.body.Password);
         Users.findOneAndUpdate(
             { Username: req.params.Username },
             {
                 $set: {
                     Username: req.body.Username,
-                    Password: req.body.Password,
+                    Password: hashedPassword,
                     Email: req.body.Email,
                     Birthday: req.body.Birthday,
                 },
@@ -373,6 +399,7 @@ app.use((err, req, res, next) => {
 });
 
 // listen for requests
-app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+    console.log('Listening on Port ' + port);
 });
