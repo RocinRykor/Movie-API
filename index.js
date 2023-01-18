@@ -14,7 +14,13 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // Connect to the database on the localhost using mongoose
-mongoose.connect(process.env.CONNECTION_URI, {
+//DEBUGGING
+
+const CONNECTION_URL = process.env.CONNECTION_URI;
+
+console.log(CONNECTION_URL);
+
+mongoose.connect(CONNECTION_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
