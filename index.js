@@ -13,8 +13,8 @@ const app = express();
 const Movies = Models.Movie;
 const Users = Models.User;
 
-// Connect to the database on the localhost using mongoose
-mongoose.connect('mongodb://127.0.0.1/myMovDB', {
+// Connect to the database on the remote site using mongoose -> Uses Enviroment Variable to redact the username/pass of the site.
+mongoose.connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
