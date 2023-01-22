@@ -1,180 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
-        <title>myMov Documentation</title>
-    </head>
-    <body>
-        <header>
-            <h1>MyMov Documentation</h1>
-        </header>
-        <main>
-            <h2>API Endpoints</h2>
-            <table>
-                <tr>
-                    <th>Operation</th>
-                    <th>Endpoint URL</th>
-                    <th>Function</th>
-                    <th>HTTP Method</th>
-                    <th>Parameters</th>
-                    <th>Request Data Format and Example</th>
-                    <th>Return Data Format and Example</th>
-                </tr>
-                <tr>
-                    <td>Get Movies</td>
-                    <td>/movies</td>
-                    <td>Return all movies in the database</td>
-                    <td>GET</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />[ ... { "ID": 1, "Title": 'Movie
-                        Title', "Actors": ['Actor 1', 'Actor 2'], ...} ... ]
-                    </td>
-                </tr>
-                <tr>
-                    <td>Get Movie by Title</td>
-                    <td>/movies/:title</td>
-                    <td>Return details of a single movie by its title</td>
-                    <td>GET</td>
-                    <td>:title as Movie Title</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />{ "ID": 1, "Title": 'Movie Title',
-                        "Actors": ['Actor 1', 'Actor 2'], ... }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Get Genre by Name</td>
-                    <td>/genre/:genreName</td>
-                    <td>Return the descripion of a genre by its title</td>
-                    <td>GET</td>
-                    <td>:genreName as Name of the Genre</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />{ "ID":1, "Title": "Genre Title",
-                        "Description": "Genre Description" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Get Director by Name</td>
-                    <td>/directors/:directorName</td>
-                    <td>Return information on a specific director by name</td>
-                    <td>GET</td>
-                    <td>:directorName as Name of the Director</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />{ "ID": 1, "Name": "Director Name",
-                        "Bio": "Director Bio", "Birth": 01/01/1970 }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Get Users</td>
-                    <td>/users</td>
-                    <td>Return all users in the database</td>
-                    <td>GET</td>
-                    <td>N/A</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />{ "ID": 1, "Username": "Steven",
-                        "Favorites": "["Movie 1", "Movie 2"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Get Users</td>
-                    <td>/users/:Username</td>
-                    <td>
-                        Return a single user in the database by it's Username
-                    </td>
-                    <td>GET</td>
-                    <td>:Username as Name of User</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />{ "ID": 1, "Username": "Steven",
-                        "Favorites": "["Movie 1", "Movie 2"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Create User</td>
-                    <td>/users</td>
-                    <td>Create a User</td>
-                    <td>POST</td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object: <br />
-                        { "Username": "Steven", "Favorites": "["Movie 1", "Movie
-                        2"...]" }
-                    </td>
-                    <td>
-                        JSON Object: <br />{ "ID": 1, "Username": "Steven",
-                        "Favorites": "["Movie 1", "Movie 2"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Update User</td>
-                    <td>/users/:Username</td>
-                    <td>Update user details</td>
-                    <td>PUT</td>
-                    <td>:Username as Name of User</td>
-                    <td>
-                        JSON Object: <br />
-                        { "Username": "Steven", "Favorites": "["Movie 3", "Movie
-                        4"...]" }}
-                    </td>
-                    <td>
-                        JSON Object of updated User: <br />{ "ID": 1,
-                        "Username": "Steven", "Favorites": "["Movie 3", "Movie
-                        4"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Add Movie to Favorites</td>
-                    <td>/users/:id/movies/:movieID</td>
-                    <td>Add movie to favorites</td>
-                    <td>POST</td>
-                    <td>
-                        :Username as Name of User <br />
-                        :movieID as the ObjectID of the movie
-                    </td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object of updated User: <br />{ "ID": 1,
-                        "Username": "Steven", "Favorites": "["Movie 3", "Movie
-                        4"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Remove Movie from Favorites</td>
-                    <td>/users/:id/movies/:movieID</td>
-                    <td>Remove movie from favorites</td>
-                    <td>DELETE</td>
-                    <td>
-                        :id as the ID of the user, :movieTitle as the title to
-                        be added to favorites
-                    </td>
-                    <td>N/A</td>
-                    <td>
-                        JSON Object of updated User: <br />{ "ID": 1,
-                        "Username": "Steven", "Favorites": "["Movie 3", "Movie
-                        4"...]" }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Delete User</td>
-                    <td>/users/:id</td>
-                    <td>Remove user</td>
-                    <td>DELETE</td>
-                    <td>:id as the specific ID of the user</td>
-                    <td>N/A</td>
-                    <td>
-                        Text Reponse with Status Message: <br />
-                        Success - User has been removed <br />
-                        Failure - User couldnt be found
-                    </td>
-                </tr>
-            </table>
-        </main>
-    </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+		<title>myMov Documentation</title>
+	</head>
+	<body>
+		<header>
+			<h1>MyMov Documentation</h1>
+		</header>
+		<main>
+			<h2>API Endpoints</h2>
+			<table>
+				<tr>
+					<th>Operation</th>
+					<th>Endpoint URL</th>
+					<th>Function</th>
+					<th>HTTP Method</th>
+					<th>Parameters</th>
+					<th>Request Data Format and Example</th>
+					<th>Return Data Format and Example</th>
+				</tr>
+				<tr>
+					<td>Get Movies</td>
+					<td>/movies</td>
+					<td>Return all movies in the database</td>
+					<td>GET</td>
+					<td>N/A</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />[ ... { "ID": 1, "Title": 'Movie
+						Title', "Actors": ['Actor 1', 'Actor 2'], ...} ... ]
+					</td>
+				</tr>
+				<tr>
+					<td>Get Movie by Title</td>
+					<td>/movies/:title</td>
+					<td>Return details of a single movie by its title</td>
+					<td>GET</td>
+					<td>:title as Movie Title</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />{ "ID": 1, "Title": 'Movie Title',
+						"Actors": ['Actor 1', 'Actor 2'], ... }
+					</td>
+				</tr>
+				<tr>
+					<td>Get Genre by Name</td>
+					<td>/genre/:genreName</td>
+					<td>Return the descripion of a genre by its title</td>
+					<td>GET</td>
+					<td>:genreName as Name of the Genre</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />{ "ID":1, "Title": "Genre Title",
+						"Description": "Genre Description" }
+					</td>
+				</tr>
+				<tr>
+					<td>Get Director by Name</td>
+					<td>/directors/:directorName</td>
+					<td>Return information on a specific director by name</td>
+					<td>GET</td>
+					<td>:directorName as Name of the Director</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />{ "ID": 1, "Name": "Director Name",
+						"Bio": "Director Bio", "Birth": 01/01/1970 }
+					</td>
+				</tr>
+				<tr>
+					<td>Get Users</td>
+					<td>/users</td>
+					<td>Return all users in the database</td>
+					<td>GET</td>
+					<td>N/A</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />{ "ID": 1, "Username": "Steven",
+						"Favorites": "["Movie 1", "Movie 2"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Get Users</td>
+					<td>/users/:Username</td>
+					<td>
+						Return a single user in the database by it's Username
+					</td>
+					<td>GET</td>
+					<td>:Username as Name of User</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />{ "ID": 1, "Username": "Steven",
+						"Favorites": "["Movie 1", "Movie 2"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Create User</td>
+					<td>/users</td>
+					<td>Create a User</td>
+					<td>POST</td>
+					<td>N/A</td>
+					<td>
+						JSON Object: <br />
+						{ "Username": "Steven", "Favorites": "["Movie 1", "Movie
+						2"...]" }
+					</td>
+					<td>
+						JSON Object: <br />{ "ID": 1, "Username": "Steven",
+						"Favorites": "["Movie 1", "Movie 2"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Update User</td>
+					<td>/users/:Username</td>
+					<td>Update user details</td>
+					<td>PUT</td>
+					<td>:Username as Name of User</td>
+					<td>
+						JSON Object: <br />
+						{ "Username": "Steven", "Favorites": "["Movie 3", "Movie
+						4"...]" }}
+					</td>
+					<td>
+						JSON Object of updated User: <br />{ "ID": 1,
+						"Username": "Steven", "Favorites": "["Movie 3", "Movie
+						4"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Add Movie to Favorites</td>
+					<td>/users/:id/movies/:movieID</td>
+					<td>Add movie to favorites</td>
+					<td>POST</td>
+					<td>
+						:Username as Name of User <br />
+						:movieID as the ObjectID of the movie
+					</td>
+					<td>N/A</td>
+					<td>
+						JSON Object of updated User: <br />{ "ID": 1,
+						"Username": "Steven", "Favorites": "["Movie 3", "Movie
+						4"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Remove Movie from Favorites</td>
+					<td>/users/:id/movies/:movieID</td>
+					<td>Remove movie from favorites</td>
+					<td>DELETE</td>
+					<td>
+						:id as the ID of the user, :movieTitle as the title to
+						be added to favorites
+					</td>
+					<td>N/A</td>
+					<td>
+						JSON Object of updated User: <br />{ "ID": 1,
+						"Username": "Steven", "Favorites": "["Movie 3", "Movie
+						4"...]" }
+					</td>
+				</tr>
+				<tr>
+					<td>Delete User</td>
+					<td>/users/:id</td>
+					<td>Remove user</td>
+					<td>DELETE</td>
+					<td>:id as the specific ID of the user</td>
+					<td>N/A</td>
+					<td>
+						Text Reponse with Status Message: <br />
+						Success - User has been removed <br />
+						Failure - User couldnt be found
+					</td>
+				</tr>
+			</table>
+		</main>
+	</body>
 </html>
