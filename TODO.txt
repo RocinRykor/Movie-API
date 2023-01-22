@@ -1,0 +1,4 @@
+Update documentation page to provide accurate examples of required JSON Data
+Add Login route to documentation page
+
+investigate error for creating user without a birthday
