@@ -57,7 +57,6 @@ app.get('/documentation', (req, res) => {
  */
 app.get(
 	'/movies',
-	passport.authenticate('jwt', { session: false }),
 	(req, res) => {
 		Movies.find()
 			.then((movies) => {
@@ -71,7 +70,7 @@ app.get(
 );
 
 /*
- * Fucntion -> READ data from single movie
+ * Function -> READ data from single movie
  * Param(s) -> (String) :title = Movie Title
  *
  * Return -> JSON Object
@@ -92,7 +91,7 @@ app.get(
 );
 
 /*
- * Fucntion -> READ data from single genre
+ * Function -> READ data from single genre
  * Param(s) -> (String) :genreTitle
  *
  * Return -> JSON Object
@@ -114,7 +113,7 @@ app.get(
 );
 
 /*
- * Fucntion -> READ data from single Director
+ * Function -> READ data from single Director
  * Param(s) -> (String) :directorName
  *
  * Return -> JSON Object
@@ -135,7 +134,7 @@ app.get(
 );
 
 /*
- * Fucntion -> READ data from all Users
+ * Function -> READ data from all Users
  *
  * Return -> JSON Object
  */
@@ -155,7 +154,7 @@ app.get(
 );
 
 /*
- * Fucntion -> READ data from single user
+ * Function -> READ data from single user
  * Param(s) -> (String) :Username
  *
  * Return -> JSON Object
@@ -177,7 +176,7 @@ app.get(
 );
 
 /*
- * Fucntion -> CREATE data for a single User, automatically hashes the password before inserting into DB
+ * Function -> CREATE data for a single User, automatically hashes the password before inserting into DB
  * Request -> JSON Object
     Username: String,
     Password: String,
@@ -191,7 +190,7 @@ app.post(
 	'/users',
 	/* 
     Validation logic here for request:
-    Username Requirements: Alohanumeric with Min Length of 3 Characters
+    Username Requirements: Alphanumeric with Min Length of 3 Characters
     Password Requirements: Minimum of 10 Characters
     Email: Valid Email Address
     */
@@ -247,7 +246,7 @@ app.post(
 );
 
 /*
- * Fucntion -> PUT/UPDATE data for a single User
+ * Function -> PUT/UPDATE data for a single User
  * Param(s) -> (String) :Username
  * Request -> JSON Object
     Username: String, //(required)
@@ -262,7 +261,7 @@ app.put(
 	passport.authenticate('jwt', { session: false }),
 	/* 
     Validation logic here for request:
-    Username Requirements: Alohanumeric with Min Length of 3 Characters
+    Username Requirements: Alphanumeric with Min Length of 3 Characters
     Password Requirements: Minimum of 10 Characters
     Email: Valid Email Address
     */
@@ -311,7 +310,7 @@ app.put(
 );
 
 /*
- * Fucntion -> CREATE new movie entry for single user
+ * Function -> CREATE new movie entry for single user
  * Param(s) -> 
     (String) :Username
     (ObjectID) :MovieID
@@ -341,7 +340,7 @@ app.post(
 );
 
 /*
- * Fucntion -> DELETE movie entry for single user
+ * Function -> DELETE movie entry for single user
  * Param(s) -> 
     (String) :Username
     (ObjectID) :MovieID
@@ -371,7 +370,7 @@ app.delete(
 );
 
 /*
- * Fucntion -> DELETE single user
+ * Function -> DELETE single user
  * Param(s) -> (String) :Username
  *
  * Return -> Text Object
