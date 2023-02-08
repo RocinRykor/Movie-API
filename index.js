@@ -14,8 +14,6 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // Connect to the database on the localhost using mongoose
-// DEBUGGING
-
 const CONNECTION_URL = process.env.CONNECTION_URI;
 
 console.log(CONNECTION_URL);
@@ -25,7 +23,7 @@ mongoose.connect(CONNECTION_URL, {
 	useUnifiedTopology: true,
 });
 
-// Use CORS to setup Allowed Origins
+// Use CORS to set up Allowed Origins
 const cors = require('cors');
 app.use(cors());
 
@@ -51,7 +49,7 @@ app.get('/documentation', (req, res) => {
 //API Routes
 
 /*
- * Fucntion -> READ all movies
+ * Function -> READ all movies
  *
  * Return -> JSON Object
  */
