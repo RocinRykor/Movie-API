@@ -23,6 +23,10 @@ mongoose.connect(CONNECTION_URL, {
 	useUnifiedTopology: true,
 });
 
+app.use(express.json());
+app.use(morgan("common"));
+app.use(express.static("public"));
+
 // Use CORS to set up Allowed Origins
 const cors = require('cors');
 app.use(cors());
@@ -31,10 +35,6 @@ app.use(cors());
 const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
-
-app.use(bodyParser.json());
-app.use(morgan('common'));
-app.use(express.static('public'));
 
 // GET requests
 app.get('/', (req, res) => {
