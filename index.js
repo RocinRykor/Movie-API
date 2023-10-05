@@ -5,7 +5,10 @@ const express = require('express'),
     mongoose = require('mongoose'),
     Models = require('./models.js');
 
+
 const {check, validationResult} = require('express-validator');
+
+const {S3Client, ListObjectsV2Command, GetObjectCommand, PutObjectCommand} = require('@aws-sdk/client-s3')
 
 const app = express();
 
@@ -17,6 +20,10 @@ const Users = Models.User;
 const CONNECTION_URL = process.env.CONNECTION_URI;
 
 const IMAGE_BUCKET = process.env.IMAGE_BUCKET;
+
+const s3Client = new S3Client({
+  region: "us-east-1",
+});
 
 console.log(CONNECTION_URL);
 
