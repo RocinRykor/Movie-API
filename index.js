@@ -388,6 +388,9 @@ app.get(
   async (req, res) => {
     try {
       const movieId = req.params.movieId;
+
+      console.log("Fetching Movies: ", movieId);
+
       const command = new ListObjectsV2Command({
         Bucket: IMAGE_BUCKET,
         Prefix: `resized-images/${movieId}/`,
