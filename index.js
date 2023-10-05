@@ -376,7 +376,7 @@ app.delete(
 
 // Update the routes and functions
 app.get(
-  '/movies/:movieId/images',
+  '/images/:movieId/',
   authorizeJWT,
   async (req, res) => {
     try {
@@ -418,7 +418,7 @@ app.get(
 );
 
 app.post(
-  '/movies/:movieId/images/',
+  '/images/:movieId/',
   authorizeJWT,
   async (req, res) => {
     try {
