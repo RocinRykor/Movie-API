@@ -24,8 +24,6 @@ const Users = Models.User;
 // Connect to the database on the localhost using mongoose
 const CONNECTION_URL = process.env.CONNECTION_URI;
 
-const myflix-images = process.env.myflix-images;
-
 const s3Client = new S3Client({
   region: 'us-east-1',
 });
