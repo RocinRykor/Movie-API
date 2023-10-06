@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.425.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",

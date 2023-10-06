@@ -5,7 +5,10 @@ const express = require('express'),
     mongoose = require('mongoose'),
     Models = require('./models.js');
 
+
 const {check, validationResult} = require('express-validator');
+
+const {S3Client, ListObjectsV2Command, GetObjectCommand, PutObjectCommand} = require('@aws-sdk/client-s3')
 
 const app = express();
 
@@ -15,6 +18,12 @@ const Users = Models.User;
 
 // Connect to the database on the localhost using mongoose
 const CONNECTION_URL = process.env.CONNECTION_URI;
+
+const IMAGE_BUCKET = process.env.IMAGE_BUCKET;
+
+const s3Client = new S3Client({
+  region: "us-east-1",
+});
 
 console.log(CONNECTION_URL);
 
@@ -35,6 +44,10 @@ app.use(cors());
 const auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
+
+const authorizeJWT = (req, res, next) => {
+  passport.authenticate('jwt', { session: false })(req, res, next);
+};
 
 // GET requests
 app.get('/', (req, res) => {
@@ -288,7 +301,6 @@ app.put(
     },
 );
 
-
 /**
  * Adds a single movie to users favorite list.
  * @param {string} Username - The username of the user.
@@ -367,6 +379,79 @@ app.delete(
         res.status(500).send('Error: ' + err);
       });
     },
+);
+
+// Update the routes and functions
+app.get(
+  '/images/:movieId/',
+  authorizeJWT,
+  async (req, res) => {
+    try {
+      const movieId = req.params.movieId;
+
+      console.log("Fetching Movies: ", movieId);
+
+      const command = new ListObjectsV2Command({
+        Bucket: IMAGE_BUCKET,
+        Prefix: `resized-images/${movieId}/`,
+      });
+
+      const response = await s3Client.send(command);
+
+      res.status(200).json(response);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    }
+  }
+);
+
+app.get(
+  '/images/:objectKey',
+  authorizeJWT,
+  async (req, res) => {
+    try {
+      const objectKey = req.params.objectKey;
+      const command = new GetObjectCommand({
+        Bucket: IMAGE_BUCKET,
+        Key: objectKey,
+      });
+
+      const response = await s3Client.send(command);
+
+      res.status(200).json(response);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    }
+  }
+);
+
+app.post(
+  '/images/:movieId/',
+  authorizeJWT,
+  async (req, res) => {
+    try {
+      const movieId = req.params.movieId;
+      const fileContent = req.body.fileContent; // Assuming you send fileContent in the request body
+      const fileName = req.body.fileName; // Assuming you send fileName in the request body
+
+      console.log(movieId, fileName);
+
+      const command = new PutObjectCommand({
+        Bucket: IMAGE_BUCKET,
+        Key: `original-images/${movieId}/${fileName}`,
+        Body: fileContent,
+      });
+
+      const response = await s3Client.send(command);
+
+      res.status(200).json(response);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    }
+  }
 );
 
 // Error Handling
