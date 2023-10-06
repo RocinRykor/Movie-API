@@ -4,11 +4,16 @@ const express = require('express'),
     uuid = require('uuid'),
     mongoose = require('mongoose'),
     Models = require('./models.js');
-
+const multer = require('multer');
 
 const {check, validationResult} = require('express-validator');
 
-const {S3Client, ListObjectsV2Command, GetObjectCommand, PutObjectCommand} = require('@aws-sdk/client-s3')
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+  PutObjectCommand,
+} = require('@aws-sdk/client-s3');
 
 const app = express();
 
@@ -22,7 +27,7 @@ const CONNECTION_URL = process.env.CONNECTION_URI;
 const IMAGE_BUCKET = process.env.IMAGE_BUCKET;
 
 const s3Client = new S3Client({
-  region: "us-east-1",
+  region: 'us-east-1',
 });
 
 console.log(CONNECTION_URL);
@@ -46,7 +51,7 @@ const passport = require('passport');
 require('./passport');
 
 const authorizeJWT = (req, res, next) => {
-  passport.authenticate('jwt', { session: false })(req, res, next);
+  passport.authenticate('jwt', {session: false})(req, res, next);
 };
 
 // GET requests
@@ -383,64 +388,73 @@ app.delete(
 
 // Update the routes and functions
 app.get(
-  '/images/:movieId/',
-  authorizeJWT,
-  async (req, res) => {
-    try {
-      const movieId = req.params.movieId;
+    '/images/:movieId/',
+    authorizeJWT,
+    async (req, res) => {
+      try {
+        const movieId = req.params.movieId;
 
-      console.log("Fetching Movies: ", movieId);
+        console.log('Fetching Movies: ', movieId);
 
-      const command = new ListObjectsV2Command({
-        Bucket: IMAGE_BUCKET,
-        Prefix: `resized-images/${movieId}/`,
-      });
+        const command = new ListObjectsV2Command({
+          Bucket: IMAGE_BUCKET,
+          Prefix: `resized-images/${movieId}/`,
+        });
 
-      const response = await s3Client.send(command);
+        const response = await s3Client.send(command);
 
-      res.status(200).json(response);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    }
-  }
+        res.status(200).json(response);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      }
+    },
 );
 
 app.get(
-  '/images/:objectKey',
-  authorizeJWT,
-  async (req, res) => {
-    try {
-      const objectKey = req.params.objectKey;
-      const command = new GetObjectCommand({
-        Bucket: IMAGE_BUCKET,
-        Key: objectKey,
-      });
+    '/images/:objectKey',
+    authorizeJWT,
+    async (req, res) => {
+      try {
+        const objectKey = req.params.objectKey;
+        const command = new GetObjectCommand({
+          Bucket: IMAGE_BUCKET,
+          Key: objectKey,
+        });
 
-      const response = await s3Client.send(command);
+        const response = await s3Client.send(command);
 
-      res.status(200).json(response);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    }
-  }
+        res.status(200).json(response);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      }
+    },
 );
 
+// Create a storage engine using multer
+const storage = multer.memoryStorage(); // Use memory storage for storing files temporarily
+
+// Create a multer instance with the storage engine
+const upload = multer({storage: storage});
+
+// Use the upload middleware when handling the POST request
 app.post(
   '/images/:movieId/',
   authorizeJWT,
+  upload.single('file'), // 'file' should match the field name in your FormData
   async (req, res) => {
     try {
       const movieId = req.params.movieId;
-      const fileContent = req.body.fileContent; // Assuming you send fileContent in the request body
-      const fileName = req.body.fileName; // Assuming you send fileName in the request body
+      const fileContent = req.file.buffer; // Use req.file.buffer to access the file content
+      const fileName = req.file.originalname
 
-      console.log(movieId, fileName);
+      console.log("Movie ID", movieId);
+      console.log("File Content", fileContent);
 
       const command = new PutObjectCommand({
         Bucket: IMAGE_BUCKET,
-        Key: `original-images/${movieId}/${fileName}`,
+        Key: `original-images/${movieId}/${fileName}`, // Make sure to define 'fileName' somewhere in your code.
         Body: fileContent,
       });
 
