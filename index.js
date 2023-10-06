@@ -24,7 +24,7 @@ const Users = Models.User;
 // Connect to the database on the localhost using mongoose
 const CONNECTION_URL = process.env.CONNECTION_URI;
 
-const IMAGE_BUCKET = process.env.IMAGE_BUCKET;
+const myflix-images = process.env.myflix-images;
 
 const s3Client = new S3Client({
   region: 'us-east-1',
@@ -397,7 +397,7 @@ app.get(
         console.log('Fetching Movies: ', movieId);
 
         const command = new ListObjectsV2Command({
-          Bucket: IMAGE_BUCKET,
+          Bucket: "myflix-images",
           Prefix: `resized-images/${movieId}/`,
         });
 
@@ -418,7 +418,7 @@ app.get(
       try {
         const objectKey = req.params.objectKey;
         const command = new GetObjectCommand({
-          Bucket: IMAGE_BUCKET,
+          Bucket: myflix-images,
           Key: objectKey,
         });
 
@@ -453,7 +453,7 @@ app.post(
       console.log("File Content", fileContent);
 
       const command = new PutObjectCommand({
-        Bucket: IMAGE_BUCKET,
+        Bucket: myflix-images,
         Key: `original-images/${movieId}/${fileName}`, // Make sure to define 'fileName' somewhere in your code.
         Body: fileContent,
       });
